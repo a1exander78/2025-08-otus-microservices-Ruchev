@@ -1,1 +1,1 @@
-# 2025-08-otus-microservices-Ruchev
+# Репозиторий с домашними заданиями по курсу Microservice Architecture
