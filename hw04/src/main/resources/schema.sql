@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id bigserial,
     username varchar(16),
     first_name varchar(32),

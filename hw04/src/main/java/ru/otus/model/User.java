@@ -12,19 +12,19 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("USERS")
+@Table("users")
 public class User {
     @Id
-    @Column("ID")
+    @Column("id")
     Long id;
-    @Column("USERNAME")
+    @Column("username")
     String username;
-    @Column("FIRST_NAME")
+    @Column("first_name")
     String firstName;
-    @Column("LAST_NAME")
+    @Column("last_name")
     String lastName;
-    @Column("EMAIL")
+    @Column("email")
     String email;
-    @Column("PHONE")
+    @Column("phone")
     String phone;
 }
