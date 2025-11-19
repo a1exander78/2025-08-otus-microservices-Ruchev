@@ -35,8 +35,6 @@
 
 ## Инструкция по запуску приложения
 
-### 1. Установка базы данных PostgreSQL через Helm
-
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
