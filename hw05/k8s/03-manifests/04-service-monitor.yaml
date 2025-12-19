@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name:  hw05-monitor
+  labels:
+    app: hw05-app
+    release: prometheus
+    
+spec:
+  endpoints:
+    - port: http
+      scrapeTimeout: 30s
+      path: /actuator/prometheus     
+      honorLabels: true
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app: hw05-app
+  

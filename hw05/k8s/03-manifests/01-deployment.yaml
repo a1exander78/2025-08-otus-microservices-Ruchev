@@ -13,10 +13,18 @@ spec:
     metadata:
       labels:
         app: hw05-app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "8000"
+        prometheus.io/scheme: "http"
+        grafana.com/scrape: "true"
+        grafana.com/port: "8000"
     spec:
       containers:
         - name: hw05-app
           image: a1exander78/hw05:latest
+          imagePullPolicy: Never #тянул локально, тк была проблема с сетью
           ports:
             - containerPort: 8000
               name: http
@@ -29,7 +37,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
                 configMapKeyRef:
-                  name: hw04-config
+                  name: hw05-config
                   key: SPRING_PROFILES_ACTIVE
             - name: SPRING_DATASOURCE_URL
               valueFrom:
@@ -55,17 +63,18 @@ spec:
 
           livenessProbe:
             httpGet:
-              path: /health
+              path: /actuator/health/liveness
               port: 8000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 20
             timeoutSeconds: 10
             failureThreshold: 3
+
           readinessProbe:
             httpGet:
-              path: /health
+              path: /actuator/health/readiness
               port: 8000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 90
             periodSeconds: 20
             timeoutSeconds: 10
             failureThreshold: 3
