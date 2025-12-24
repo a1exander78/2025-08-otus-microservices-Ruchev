@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw05-deployment
+  labels:
+    app: hw05-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hw05-app
+  template:
+    metadata:
+      labels:
+        app: hw05-app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "8000"
+        prometheus.io/scheme: "http"
+        grafana.com/scrape: "true"
+        grafana.com/port: "8000"
+    spec:
+      containers:
+        - name: hw05-app
+          image: a1exander78/hw05:latest
+          imagePullPolicy: Never #тянул локально, тк была проблема с сетью
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: hw05-config
+                  key: APP_PORT
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: hw05-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: hw05-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: hw05-config
+                  key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hw05-secret
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hw05-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8000
+            initialDelaySeconds: 90
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 3
